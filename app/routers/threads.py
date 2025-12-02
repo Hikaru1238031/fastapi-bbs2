@@ -26,8 +26,14 @@ async def list_threads(db: Session = Depends(get_db)):
 @router.get("/{thread_id}", response_model=ThreadResponse)
 async def get_thread(thread_id: int, db: Session = Depends(get_db)):
     stmt = select(Thread).where(Thread.id == thread_id)
-    result = db.execute(stmt).scalar_one()
+    result = db.execute(stmt).scalar_one_or_none()
+
+    if result is None:
+        # 見つからないので例外を raise 404 Not found
+        raise HTTPException(status_code=404, detail="Thread not found")
+
     return result
+
 
 # -----------------------------------
 # スレッド作成 POST /threads
