@@ -31,3 +31,4 @@ venv/
 
 # Windows
 Thumbs.db
+app/static

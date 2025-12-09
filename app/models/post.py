@@ -12,3 +12,4 @@ class Post(Base):
     content = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     author = Column(String, nullable=False, server_default="名無しさん")
+    attachment = Column(String, nullable=True) 
