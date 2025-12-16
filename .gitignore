@@ -31,4 +31,6 @@ venv/
 
 # Windows
 Thumbs.db
-app/static
+
+# uploadsフォルダを除外
+app/static/uploads
