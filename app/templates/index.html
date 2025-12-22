@@ -1,39 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-.pagination {
-    margin: 20px 0;
-    text-align: center;
-}
-
-.pagination a,
-.pagination span {
-    display: inline-block;
-    padding: 6px 12px;
-    margin: 0 3px;
-    border: 1px solid #ccc;
-    color: #333;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.pagination .current-page {
-    background-color: #333;
-    color: #fff;
-    border-color: #333;
-}
-
-.pagination a:hover {
-    background-color: #ddd;
-}
-
-.pagination .disabled {
-    opacity: 0.4;
-    cursor: default;
-}
-</style>
 
 <!-- 新規スレッド作成ボタン -->
 <div class="section-box" style="text-align: center;">
@@ -47,37 +14,17 @@
     <ul class="thread-list">
         {% for thread in threads %}
             <li>
-                <a href="/threads/{{ thread.id }}/view">{{ thread.title }}</a><small style="margin-left:20px;">作成日時：{{ thread.created_at }}</small>
+                <a href="/threads/{{ thread.id }}/view">{{ thread.title }}</a><br>
+                <small>作成日時：{{ thread.created_at }}</small>
             </li>
         {% endfor %}
     </ul>
-    {% if total_pages > 1 %}
-    <div class="pagination">
-    {% if page > 1 %}
-        <a href="/threads/list?page=1">«</a>
-        <a href="/threads/list?page={{ page - 1 }}">‹</a>
-    {% else %}
-        <span class="disabled">«</span>
-        <span class="disabled">‹</span>
-    {% endif %}
 
-    {% for p in range(1, total_pages + 1) %}
-        {% if p == page %}
-            <span class="current-page">{{ p }}</span>
-        {% else %}
-            <a href="/threads/list?page={{ p }}">{{ p }}</a>
-        {% endif %}
-    {% endfor %}
-
-    {% if page < total_pages %}
-        <a href="/threads/list?page={{ page + 1 }}">›</a>
-        <a href="/threads/list?page={{ total_pages }}">»</a>
-    {% else %}
-        <span class="disabled">›</span>
-        <span class="disabled">»</span>
-    {% endif %}
-    </div>
-{% endif %}
+    <!--ページネーションの共通化-->
+    {% set _page = page %}
+    {% set _total_pages = total_pages %}
+    {% set _base_url = "/threads/list?" %}
+    {% include "common/pagination.html" %}
 
 </div>
 
@@ -87,17 +34,13 @@
 
     {% for post in latest_posts %}
         <div>
-        {%if post.thread_title %}
+        <a href="/threads/{{post.thread_id}}/view?post={{post.post_number}}">
             {{post.post_number}}:<strong>{{ post.thread_title }} - {{post.author}}</strong><br>
-        {% else %}
-            {{post.post_number}}:<strong>{{post.author}}</strong><br>
-        {% endif%}
-
+        </a>
             {{ post.content }}<small>日時：{{ post.created_at }}</small>
             {% if post.attachment %}
             <div class="attachment">
-                <img src="/static/uploads/{{ post.attachment }}"
-                        style="max-width: 300px; border: 1px solid #ccc;">
+                <img src="/static/uploads/{{ post.attachment }}" style="max-width: 300px; border: 1px solid #ccc;">
             </div>
             {% endif %}
             <hr>
